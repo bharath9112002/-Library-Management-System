@@ -1,0 +1,45 @@
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+const NAME_REGEX = /^[A-Za-z][A-Za-z .'-]*$/
+
+export function validateEmail(email) {
+  if (!email.trim()) return 'Email is required.'
+  if (!EMAIL_REGEX.test(email.trim())) return 'Enter a valid email address.'
+  return ''
+}
+
+export function validateFullName(name) {
+  const value = name.trim()
+  if (!value) return 'Full name is required.'
+  if (value.length < 3) return 'Full name must be at least 3 characters.'
+  if (value.length > 50) return 'Full name must be under 50 characters.'
+  if (!NAME_REGEX.test(value)) return 'Full name can only contain letters and spaces.'
+  return ''
+}
+
+export const PASSWORD_RULES = [
+  { label: 'At least 8 characters', test: (p) => p.length >= 8 },
+  { label: 'One uppercase letter', test: (p) => /[A-Z]/.test(p) },
+  { label: 'One lowercase letter', test: (p) => /[a-z]/.test(p) },
+  { label: 'One number', test: (p) => /\d/.test(p) },
+  { label: 'One special character', test: (p) => /[^A-Za-z0-9]/.test(p) },
+]
+
+export function validatePassword(password) {
+  if (!password) return 'Password is required.'
+  const failed = PASSWORD_RULES.find((rule) => !rule.test(password))
+  return failed ? `Password needs: ${failed.label.toLowerCase()}.` : ''
+}
+
+export function validateConfirmPassword(password, confirm) {
+  if (!confirm) return 'Please confirm your password.'
+  if (password !== confirm) return 'Passwords do not match.'
+  return ''
+}
+
+export function passwordStrength(password) {
+  const score = PASSWORD_RULES.filter((rule) => rule.test(password)).length
+  if (!password) return { score: 0, label: '' }
+  if (score <= 2) return { score, label: 'Weak' }
+  if (score <= 4) return { score, label: 'Medium' }
+  return { score, label: 'Strong' }
+}

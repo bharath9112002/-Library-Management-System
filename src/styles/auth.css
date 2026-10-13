@@ -1,0 +1,196 @@
+.auth-page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+
+.auth-hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  color: #fff;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+}
+
+.auth-hero-inner {
+  max-width: 380px;
+  text-align: center;
+}
+
+.auth-hero-logo {
+  font-size: 4rem;
+}
+
+.auth-hero h2 {
+  font-size: 2.2rem;
+  margin: 12px 0;
+}
+
+.auth-hero p {
+  font-size: 1.05rem;
+  opacity: 0.9;
+}
+
+.auth-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--surface);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  padding: 36px 32px;
+}
+
+.auth-header {
+  margin-bottom: 24px;
+}
+
+.auth-header h1 {
+  font-size: 1.6rem;
+  margin-bottom: 4px;
+}
+
+.auth-header p {
+  color: var(--muted);
+}
+
+.auth-mobile-logo {
+  display: none;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 12px;
+}
+
+.auth-footer {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.demo-hint {
+  display: block;
+  width: 100%;
+  margin-top: 16px;
+  padding: 10px;
+  border: 1px dashed transparent;
+  border-radius: 8px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font: inherit;
+  font-size: 0.85rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.demo-hint:hover {
+  border-color: var(--primary);
+}
+
+.demo-hint-action {
+  display: block;
+  font-size: 0.75rem;
+  opacity: 0.8;
+  margin-top: 2px;
+}
+
+/* Password strength */
+.password-strength {
+  margin: -6px 0 16px;
+}
+
+.strength-bar {
+  height: 6px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.strength-fill {
+  display: block;
+  height: 100%;
+  transition: width 0.2s;
+}
+
+.strength-weak {
+  background: var(--danger);
+}
+
+.strength-medium {
+  background: var(--warning);
+}
+
+.strength-strong {
+  background: var(--success);
+}
+
+.strength-label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.password-rules {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px 12px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.password-rules li.ok {
+  color: var(--success);
+}
+
+/* Forgot password success */
+.success-state {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: center;
+}
+
+.success-icon {
+  font-size: 3rem;
+}
+
+.success-state p {
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+@media (max-width: 860px) {
+  .auth-page {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-hero {
+    display: none;
+  }
+
+  .auth-mobile-logo {
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 28px 20px;
+  }
+
+  .password-rules {
+    grid-template-columns: 1fr;
+  }
+}
