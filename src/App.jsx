@@ -8,6 +8,7 @@ import Register from './pages/auth/Register'
 import ForgotPassword from './pages/auth/ForgotPassword'
 import Dashboard from './pages/Dashboard'
 import NotFound from './pages/NotFound'
+import ComingSoon from './pages/ComingSoon'
 
 export default function App() {
   return (
@@ -25,6 +26,12 @@ export default function App() {
           <Route element={<ProtectedRoute />}>
             <Route element={<AppLayout />}>
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/books" element={<ComingSoon title="Book Management" />} />
+              <Route path="/members" element={<ComingSoon title="Member Management" />} />
+              <Route path="/issues" element={<ComingSoon title="Issue / Return Books" />} />
+              <Route path="/fines" element={<ComingSoon title="Fines" />} />
+              <Route path="/categories" element={<ComingSoon title="Categories" />} />
+              <Route path="/reports" element={<ComingSoon title="Reports" />} />
             </Route>
           </Route>
 
