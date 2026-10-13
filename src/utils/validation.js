@@ -106,3 +106,33 @@ export function validateBook(values) {
     description: requiredText(values.description, 'Description', { min: 20, max: 1000 }),
   }
 }
+
+// ---------- Members ----------
+
+export function validateMobile(mobile) {
+  const value = mobile.replace(/[\s-]/g, '').replace(/^(\+91|0)/, '')
+  if (!value) return 'Mobile number is required.'
+  if (!/^[6-9]\d{9}$/.test(value)) return 'Enter a valid 10-digit Indian mobile number.'
+  return ''
+}
+
+export function validateMember(values) {
+  let dateError = ''
+  if (!values.membershipDate) dateError = 'Membership date is required.'
+  else {
+    const date = new Date(values.membershipDate)
+    const today = new Date()
+    today.setHours(23, 59, 59, 999)
+    if (Number.isNaN(date.getTime())) dateError = 'Enter a valid date.'
+    else if (date > today) dateError = 'Membership date cannot be in the future.'
+    else if (date.getFullYear() < 2000) dateError = 'Membership date must be in 2000 or later.'
+  }
+
+  return {
+    fullName: validateFullName(values.fullName),
+    email: validateEmail(values.email),
+    mobile: validateMobile(values.mobile),
+    address: requiredText(values.address, 'Address', { min: 10, max: 200 }),
+    membershipDate: dateError,
+  }
+}

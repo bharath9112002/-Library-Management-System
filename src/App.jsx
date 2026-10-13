@@ -13,6 +13,9 @@ import ComingSoon from './pages/ComingSoon'
 import BookList from './pages/books/BookList'
 import BookDetails from './pages/books/BookDetails'
 import BookFormPage from './pages/books/BookForm'
+import MemberList from './pages/members/MemberList'
+import MemberProfile from './pages/members/MemberProfile'
+import MemberFormPage from './pages/members/MemberForm'
 
 export default function App() {
   return (
@@ -35,7 +38,10 @@ export default function App() {
                 <Route path="/books/new" element={<BookFormPage />} />
                 <Route path="/books/:id" element={<BookDetails />} />
                 <Route path="/books/:id/edit" element={<BookFormPage />} />
-                <Route path="/members" element={<ComingSoon title="Member Management" />} />
+                <Route path="/members" element={<MemberList />} />
+                <Route path="/members/new" element={<MemberFormPage />} />
+                <Route path="/members/:id" element={<MemberProfile />} />
+                <Route path="/members/:id/edit" element={<MemberFormPage />} />
                 <Route path="/issues" element={<ComingSoon title="Issue / Return Books" />} />
                 <Route path="/fines" element={<ComingSoon title="Fines" />} />
                 <Route path="/categories" element={<ComingSoon title="Categories" />} />
