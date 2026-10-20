@@ -1,0 +1,404 @@
+/* Charts (shared by Reports and Dashboard) and the Reports page. */
+
+:root {
+  --chart-grid: #eef0f4;
+  --chart-axis: #cbd0d8;
+  --chart-tick: #8a8f98;
+}
+
+/* ---------- Chart card ---------- */
+.chart-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.chart-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.chart-card-header h2 {
+  font-size: 1.05rem;
+}
+
+.chart-card-header .muted {
+  font-size: 0.82rem;
+}
+
+.chart-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chart-card-actions .btn-link {
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.view-toggle {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 8px;
+  background: #f1f3f7;
+}
+
+.view-toggle button {
+  padding: 4px 10px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.view-toggle button.active {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: -4px 0 10px;
+  padding: 0;
+  list-style: none;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.chart-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+  border-radius: 3px;
+}
+
+/* ---------- SVG charts ---------- */
+.chart {
+  position: relative;
+  width: 100%;
+  min-height: 260px;
+}
+
+.chart svg {
+  display: block;
+  overflow: visible;
+}
+
+.chart svg:focus {
+  outline: none;
+}
+
+.chart svg:focus-visible,
+.chart-band:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.chart-grid {
+  stroke: var(--chart-grid);
+  stroke-width: 1;
+}
+
+.chart-baseline {
+  stroke: var(--chart-axis);
+  stroke-width: 1;
+}
+
+.chart-tick {
+  fill: var(--chart-tick);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.chart-end-label {
+  fill: var(--text);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.chart-crosshair {
+  stroke: var(--chart-axis);
+  stroke-width: 1;
+}
+
+.chart-dot {
+  stroke: var(--surface);
+  stroke-width: 2;
+}
+
+.chart-band {
+  outline: none;
+}
+
+.band-hit {
+  fill: transparent;
+}
+
+.band-hit.is-active {
+  fill: rgba(79, 70, 229, 0.05);
+}
+
+.chart-tooltip {
+  position: absolute;
+  z-index: 5;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 140px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #111827;
+  color: #fff;
+  font-size: 0.78rem;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.25);
+  pointer-events: none;
+}
+
+.chart-tooltip strong {
+  font-size: 0.8rem;
+}
+
+.chart-tooltip .muted {
+  color: #cbd5e1;
+}
+
+.tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tooltip-row b {
+  margin-left: auto;
+  padding-left: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Bar list (horizontal bars) ---------- */
+.bar-list {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bar-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(90px, 34%) 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 5px 6px;
+  border-radius: 8px;
+  color: var(--text);
+  text-decoration: none;
+  outline: none;
+}
+
+.bar-row:hover,
+.bar-row:focus-visible {
+  background: #f6f7fb;
+}
+
+.bar-row:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--primary);
+}
+
+.bar-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.85rem;
+}
+
+.bar-track {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* 14px thick, rounded at the data end, square at the baseline */
+.bar-fill {
+  height: 14px;
+  min-width: 2px;
+  flex-shrink: 1;
+  border-radius: 0 4px 4px 0;
+}
+
+.bar-value {
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.bar-tooltip {
+  left: 60%;
+  bottom: calc(100% + 4px);
+  top: auto;
+}
+
+/* ---------- Tables ---------- */
+.chart-table-wrap {
+  overflow-x: auto;
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+}
+
+.report-table th,
+.report-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid #f1f3f7;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.report-table th {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.report-table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.report-table tfoot td {
+  border-top: 1px solid var(--border);
+  border-bottom: none;
+  font-weight: 700;
+}
+
+/* ---------- Reports page ---------- */
+.report-tiles {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.report-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  color: var(--text);
+  text-decoration: none;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.report-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.12);
+}
+
+.report-tile .mini-stat-icon {
+  margin-bottom: 8px;
+}
+
+.report-tile-label {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.report-tile strong {
+  font-size: 1.75rem;
+  line-height: 1.15;
+}
+
+.report-tile .muted {
+  font-size: 0.78rem;
+}
+
+.report-grid,
+.dashboard-charts {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 22px;
+  margin-bottom: 22px;
+  align-items: start;
+}
+
+/* The dashboard already spaces its sections with a flex gap. */
+.dashboard-charts {
+  margin-bottom: 0;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1200px) {
+  .report-tiles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1000px) {
+  .report-grid,
+  .dashboard-charts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .report-tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 400px) {
+  .report-tiles {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- Print ---------- */
+@media print {
+  .sidebar,
+  .topbar,
+  .page-header-actions,
+  .view-toggle {
+    display: none !important;
+  }
+
+  .main-area {
+    margin: 0 !important;
+  }
+
+  .report-tile,
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #e5e7eb;
+    break-inside: avoid;
+  }
+}

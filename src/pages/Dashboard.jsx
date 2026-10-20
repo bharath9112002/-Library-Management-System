@@ -2,10 +2,25 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import useAuth from '../context/useAuth'
 import Icon from '../components/Icon'
-import { dashboardStats as stats, recentActivities, statTrends } from '../data/dashboardData'
+import BarList from '../components/charts/BarList'
+import ChartCard from '../components/charts/ChartCard'
+import LineChart from '../components/charts/LineChart'
+import { SERIES_COLORS } from '../components/charts/chartUtils'
+import {
+  categoryDistribution,
+  dashboardStats as stats,
+  monthlyCirculation,
+  recentActivities,
+  statTrends,
+} from '../data/dashboardData'
 import { formatCurrency } from '../utils/format'
 
 const formatNumber = (n) => n.toLocaleString('en-IN')
+
+const CIRCULATION_SERIES = [
+  { key: 'issued', label: 'Issued', color: SERIES_COLORS[0] },
+  { key: 'returned', label: 'Returned', color: SERIES_COLORS[1] },
+]
 
 const PRIMARY_STATS = [
   { key: 'totalBooks', label: 'Total Books', icon: 'book', accent: 'indigo' },
@@ -153,18 +168,71 @@ export default function Dashboard() {
 
       <div className="stats-grid stats-primary">
         {PRIMARY_STATS.map((s) => (
-          <StatCard key={s.key} {...s} value={formatNumber(stats[s.key])} trend={statTrends[s.key]} />
+          <StatCard key={s.key} label={s.label} icon={s.icon} accent={s.accent} value={formatNumber(stats[s.key])} trend={statTrends[s.key]} />
         ))}
       </div>
       <div className="stats-grid stats-secondary">
         {SECONDARY_STATS.map((s) => (
           <StatCard
             key={s.key}
-            {...s}
+            label={s.label}
+            icon={s.icon}
+            accent={s.accent}
             value={s.currency ? formatCurrency(stats[s.key]) : formatNumber(stats[s.key])}
             trend={statTrends[s.key]}
           />
         ))}
+      </div>
+
+      <div className="dashboard-charts">
+        <ChartCard
+          title="Circulation trend"
+          subtitle="Books issued and returned per month · sample data"
+          legend={CIRCULATION_SERIES}
+          table={
+            <table className="report-table">
+              <thead>
+                <tr>
+                  <th>Month</th>
+                  <th className="num">Issued</th>
+                  <th className="num">Returned</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[...monthlyCirculation].reverse().map((m) => (
+                  <tr key={m.fullMonth}>
+                    <td>{m.fullMonth}</td>
+                    <td className="num">{formatNumber(m.issued)}</td>
+                    <td className="num">{formatNumber(m.returned)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          }
+        >
+          <LineChart
+            categories={monthlyCirculation.map((m) => m.month)}
+            series={CIRCULATION_SERIES.map((s) => ({ ...s, values: monthlyCirculation.map((m) => m[s.key]) }))}
+            format={formatNumber}
+            ariaLabel="Books issued and returned per month over the last 12 months (sample data)"
+          />
+        </ChartCard>
+
+        <ChartCard
+          title="Books by category"
+          subtitle="Share of the collection · sample data"
+          actions={
+            <Link to="/reports" className="btn btn-link">
+              Full report
+            </Link>
+          }
+        >
+          <BarList
+            data={categoryDistribution.map((c) => ({ label: c.category, value: c.books }))}
+            format={formatNumber}
+            unit="books"
+          />
+        </ChartCard>
       </div>
 
       <div className="dashboard-columns">

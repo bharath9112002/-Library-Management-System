@@ -92,7 +92,7 @@ export default function Categories() {
           <h1>Categories</h1>
           <p className="muted">
             {categories
-              ? `${plural(categories.length, 'category')} · ${plural(totals.books, 'book')}${totals.empty ? ` · ${totals.empty} empty` : ''}`
+              ? `${categories.length} ${categories.length === 1 ? 'category' : 'categories'} ·${plural(totals.books, 'book')}${totals.empty ? ` · ${totals.empty} empty` : ''}`
               : 'Organise the catalogue into categories'}
           </p>
         </div>

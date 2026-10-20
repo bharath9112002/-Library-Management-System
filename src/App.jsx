@@ -9,7 +9,6 @@ import Register from './pages/auth/Register'
 import ForgotPassword from './pages/auth/ForgotPassword'
 import Dashboard from './pages/Dashboard'
 import NotFound from './pages/NotFound'
-import ComingSoon from './pages/ComingSoon'
 import BookList from './pages/books/BookList'
 import BookDetails from './pages/books/BookDetails'
 import BookFormPage from './pages/books/BookForm'
@@ -20,6 +19,7 @@ import IssueReturn from './pages/issues/IssueReturn'
 import Fines from './pages/fines/Fines'
 import Categories from './pages/categories/Categories'
 import Search from './pages/Search'
+import Reports from './pages/Reports'
 
 export default function App() {
   return (
@@ -50,7 +50,7 @@ export default function App() {
                 <Route path="/fines" element={<Fines />} />
                 <Route path="/categories" element={<Categories />} />
                 <Route path="/search" element={<Search />} />
-                <Route path="/reports" element={<ComingSoon title="Reports" />} />
+                <Route path="/reports" element={<Reports />} />
               </Route>
             </Route>
 

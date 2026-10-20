@@ -33,3 +33,30 @@ export const recentActivities = [
   { id: 6, type: 'overdue', title: 'Book overdue', detail: '"Sapiens" with Vikram Singh · 6 days', time: minutesAgo(420) },
   { id: 7, type: 'issue', title: 'Book issued', detail: '"Wings of Fire" to Meera Nair', time: minutesAgo(1500) },
 ]
+
+// Dummy chart data for the dashboard. Month labels are generated so the
+// last point is always the current month.
+const ISSUED_PER_MONTH = [142, 158, 171, 149, 163, 188, 205, 196, 174, 181, 199, 186]
+const RETURNED_PER_MONTH = [131, 150, 160, 152, 155, 176, 192, 201, 170, 175, 188, 172]
+
+export const monthlyCirculation = ISSUED_PER_MONTH.map((issued, i) => {
+  const now = new Date()
+  const date = new Date(now.getFullYear(), now.getMonth() - (ISSUED_PER_MONTH.length - 1 - i), 1)
+  return {
+    month: date.toLocaleDateString('en-IN', { month: 'short' }),
+    fullMonth: date.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' }),
+    issued,
+    returned: RETURNED_PER_MONTH[i],
+  }
+})
+
+export const categoryDistribution = [
+  { category: 'Fiction', books: 312 },
+  { category: 'Science & Technology', books: 186 },
+  { category: 'History', books: 154 },
+  { category: 'Children', books: 141 },
+  { category: 'Biography', books: 118 },
+  { category: 'Self-Help', books: 97 },
+  { category: 'Poetry', books: 64 },
+  { category: 'Other', books: 176 },
+]
