@@ -57,3 +57,7 @@ export function addDays(value, days) {
 export function daysBetween(from, to) {
   return Math.round((parseDate(to) - parseDate(from)) / DAY)
 }
+
+export function formatCurrency(amount) {
+  return `₹${amount.toLocaleString('en-IN')}`
+}

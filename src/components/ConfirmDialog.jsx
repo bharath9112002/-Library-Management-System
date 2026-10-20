@@ -5,6 +5,8 @@ export default function ConfirmDialog({
   title,
   message,
   confirmLabel = 'Delete',
+  loadingLabel = 'Deleting…',
+  icon = '🗑️',
   loading = false,
   onConfirm,
   onCancel,
@@ -29,7 +31,7 @@ export default function ConfirmDialog({
         aria-labelledby="confirm-title"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="modal-icon" aria-hidden="true">🗑️</div>
+        <div className="modal-icon" aria-hidden="true">{icon}</div>
         <h2 id="confirm-title">{title}</h2>
         <p className="muted">{message}</p>
         <div className="modal-actions">
@@ -37,7 +39,7 @@ export default function ConfirmDialog({
             Cancel
           </button>
           <button type="button" className="btn btn-danger" onClick={onConfirm} disabled={loading}>
-            {loading ? 'Deleting…' : confirmLabel}
+            {loading ? loadingLabel : confirmLabel}
           </button>
         </div>
       </div>

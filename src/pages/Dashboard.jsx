@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom'
 import useAuth from '../context/useAuth'
 import Icon from '../components/Icon'
 import { dashboardStats as stats, recentActivities, statTrends } from '../data/dashboardData'
+import { formatCurrency } from '../utils/format'
 
 const formatNumber = (n) => n.toLocaleString('en-IN')
-const formatCurrency = (n) => `₹${n.toLocaleString('en-IN')}`
 
 const PRIMARY_STATS = [
   { key: 'totalBooks', label: 'Total Books', icon: 'book', accent: 'indigo' },

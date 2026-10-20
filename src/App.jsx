@@ -17,6 +17,7 @@ import MemberList from './pages/members/MemberList'
 import MemberProfile from './pages/members/MemberProfile'
 import MemberFormPage from './pages/members/MemberForm'
 import IssueReturn from './pages/issues/IssueReturn'
+import Fines from './pages/fines/Fines'
 
 export default function App() {
   return (
@@ -44,7 +45,7 @@ export default function App() {
                 <Route path="/members/:id" element={<MemberProfile />} />
                 <Route path="/members/:id/edit" element={<MemberFormPage />} />
                 <Route path="/issues" element={<IssueReturn />} />
-                <Route path="/fines" element={<ComingSoon title="Fines" />} />
+                <Route path="/fines" element={<Fines />} />
                 <Route path="/categories" element={<ComingSoon title="Categories" />} />
                 <Route path="/reports" element={<ComingSoon title="Reports" />} />
               </Route>

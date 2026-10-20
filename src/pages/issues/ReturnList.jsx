@@ -4,8 +4,9 @@ import BookCover from '../../components/BookCover'
 import IssueStatus from '../../components/IssueStatus'
 import Pagination from '../../components/Pagination'
 import useToast from '../../context/useToast'
-import { daysBetween, formatDate } from '../../utils/format'
+import { daysBetween, formatCurrency, formatDate } from '../../utils/format'
 import { returnBook } from '../../services/issueService'
+import { FINE_PER_DAY } from '../../services/fineService'
 
 const PAGE_SIZE = 8
 
@@ -61,7 +62,10 @@ function ReturnDialog({ issue, today, onCancel, onConfirm }) {
           />
         </div>
         {late > 0 ? (
-          <div className="alert alert-warning">Returned {late} day{late > 1 ? 's' : ''} after the due date.</div>
+          <div className="alert alert-warning">
+            Returned {late} day{late > 1 ? 's' : ''} after the due date. A fine of{' '}
+            <strong>{formatCurrency(late * FINE_PER_DAY)}</strong> will be added.
+          </div>
         ) : (
           returnDate && <div className="alert alert-success">Returned on time.</div>
         )}

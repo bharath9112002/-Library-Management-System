@@ -1,0 +1,142 @@
+/* Builds on issues.css (stats, tabs, badges, return cards, history table). */
+
+.filter-chips {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.fine-count {
+  margin: 0 0 10px;
+  font-size: 0.85rem;
+}
+
+.fine-amount {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.fine-action {
+  text-align: right;
+}
+
+.fine-action .btn-link {
+  text-decoration: none;
+}
+
+/* Overdue card: running fine on the right */
+.overdue-fine {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.overdue-fine strong {
+  font-size: 1.35rem;
+  color: var(--danger);
+  font-variant-numeric: tabular-nums;
+}
+
+.overdue-fine .muted {
+  font-size: 0.78rem;
+}
+
+.overdue-fine .btn {
+  margin-top: 4px;
+}
+
+/* Pay dialog */
+.fine-breakdown {
+  display: grid;
+  gap: 6px;
+  margin: 16px 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #eef2f7;
+}
+
+.fine-breakdown > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.88rem;
+}
+
+.fine-breakdown dt {
+  color: var(--muted);
+}
+
+.fine-breakdown dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.fine-breakdown .fine-total {
+  padding-top: 8px;
+  margin-top: 2px;
+  border-top: 1px dashed var(--border);
+  font-size: 1rem;
+}
+
+.fine-breakdown .fine-total dd {
+  color: var(--danger);
+}
+
+.pay-methods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.pay-methods legend {
+  margin-bottom: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.pay-methods input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pay-methods .chip:has(input:focus-visible) {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.fine-note {
+  margin: 10px 0 14px;
+  font-size: 0.78rem;
+}
+
+@media (max-width: 720px) {
+  .fine-action {
+    text-align: left;
+  }
+}
+
+@media (max-width: 600px) {
+  .filter-chips {
+    width: 100%;
+  }
+
+  .filter-chips .chip {
+    flex: 1;
+  }
+
+  .overdue-fine {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
