@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import useAuth from '../context/useAuth'
 import Icon from './Icon'
+import GlobalSearch from './GlobalSearch'
 
 const NAV_ITEMS = [
   { to: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
@@ -71,6 +72,7 @@ export default function AppLayout() {
           <button type="button" className="icon-btn menu-btn" onClick={() => setSidebarOpen(true)} aria-label="Open menu">
             <Icon name="menu" />
           </button>
+          <GlobalSearch />
           <div className="topbar-spacer" />
           <div className="topbar-user">
             <div className="avatar" aria-hidden="true">{initials}</div>

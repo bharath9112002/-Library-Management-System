@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import TextInput from '../../components/TextInput'
 import BookCover from '../../components/BookCover'
 import useForm from '../../utils/useForm'
 import useToast from '../../context/useToast'
 import { validateBook } from '../../utils/validation'
 import { createBook, getBookById, getBooks, isIsbnTaken, updateBook } from '../../services/bookService'
+import { getCategories } from '../../services/categoryService'
 
 const EMPTY_BOOK = {
   title: '',
@@ -24,6 +25,8 @@ const EMPTY_BOOK = {
 // so the form can be initialised with the right values.
 export default function BookFormPage() {
   const { id } = useParams()
+  const [searchParams] = useSearchParams()
+  const presetCategory = searchParams.get('category') ?? '' // from "Add a book" on the categories page
   const isEdit = Boolean(id)
   const [book, setBook] = useState(null)
   const [suggestions, setSuggestions] = useState({ categories: [], authors: [], publishers: [] })
@@ -31,22 +34,23 @@ export default function BookFormPage() {
 
   useEffect(() => {
     let cancelled = false
-    Promise.all([isEdit ? getBookById(id) : Promise.resolve(null), getBooks()])
-      .then(([found, all]) => {
+    Promise.all([isEdit ? getBookById(id) : Promise.resolve(null), getBooks(), getCategories()])
+      .then(([found, all, categories]) => {
         if (cancelled) return
         const unique = (key) => [...new Set(all.map((b) => b[key]))].sort((a, b) => a.localeCompare(b))
-        setSuggestions({ categories: unique('category'), authors: unique('author'), publishers: unique('publisher') })
+        const categoryNames = categories.map((c) => c.name)
+        setSuggestions({ categories: categoryNames, authors: unique('author'), publishers: unique('publisher') })
         setBook(
           found
             ? Object.fromEntries(Object.keys(EMPTY_BOOK).map((key) => [key, String(found[key] ?? '')]))
-            : EMPTY_BOOK,
+            : { ...EMPTY_BOOK, category: categoryNames.includes(presetCategory) ? presetCategory : '' },
         )
       })
       .catch((err) => !cancelled && setError(err.message))
     return () => {
       cancelled = true
     }
-  }, [id, isEdit])
+  }, [id, isEdit, presetCategory])
 
   if (error) {
     return (
@@ -157,7 +161,31 @@ function BookForm({ bookId, initialValues, suggestions }) {
             <TextInput {...field('author')} label="Author name *" placeholder="e.g. Ruskin Bond" list="author-options" />
             <TextInput {...field('isbn')} label="ISBN number *" placeholder="9780140449136" />
             <TextInput {...field('publisher')} label="Publisher *" placeholder="e.g. Penguin India" list="publisher-options" />
-            <TextInput {...field('category')} label="Category *" placeholder="Select or type a category" list="category-options" />
+            <div className="form-group">
+              <label htmlFor="category">Category *</label>
+              <select
+                id="category"
+                name="category"
+                value={values.category}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.category ? 'has-error' : ''}
+                aria-invalid={Boolean(errors.category)}
+              >
+                <option value="">Select a category…</option>
+                {/* Keep a category that was removed from the list selectable for books that still use it. */}
+                {[...new Set([...suggestions.categories, ...(values.category ? [values.category] : [])])].map((c) => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+              {errors.category ? (
+                <p className="field-error">{errors.category}</p>
+              ) : (
+                <p className="muted form-hint">
+                  Missing one? <Link to="/categories" className="link">Manage categories</Link>
+                </p>
+              )}
+            </div>
             <TextInput {...field('publishedYear')} type="number" label="Published year *" placeholder="e.g. 2021" min="1000" />
             <div className="copies-inputs">
               <TextInput {...field('totalCopies')} type="number" label="Total copies *" min="1" />
@@ -188,9 +216,6 @@ function BookForm({ bookId, initialValues, suggestions }) {
           </datalist>
           <datalist id="publisher-options">
             {suggestions.publishers.map((p) => <option key={p} value={p} />)}
-          </datalist>
-          <datalist id="category-options">
-            {suggestions.categories.map((c) => <option key={c} value={c} />)}
           </datalist>
 
           <div className="form-actions">

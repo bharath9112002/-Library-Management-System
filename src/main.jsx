@@ -9,6 +9,7 @@ import './styles/books.css'
 import './styles/members.css'
 import './styles/issues.css'
 import './styles/fines.css'
+import './styles/categories.css'
 import App from './App.jsx'
 
 createRoot(document.getElementById('root')).render(

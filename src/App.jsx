@@ -18,6 +18,8 @@ import MemberProfile from './pages/members/MemberProfile'
 import MemberFormPage from './pages/members/MemberForm'
 import IssueReturn from './pages/issues/IssueReturn'
 import Fines from './pages/fines/Fines'
+import Categories from './pages/categories/Categories'
+import Search from './pages/Search'
 
 export default function App() {
   return (
@@ -46,7 +48,8 @@ export default function App() {
                 <Route path="/members/:id/edit" element={<MemberFormPage />} />
                 <Route path="/issues" element={<IssueReturn />} />
                 <Route path="/fines" element={<Fines />} />
-                <Route path="/categories" element={<ComingSoon title="Categories" />} />
+                <Route path="/categories" element={<Categories />} />
+                <Route path="/search" element={<Search />} />
                 <Route path="/reports" element={<ComingSoon title="Reports" />} />
               </Route>
             </Route>

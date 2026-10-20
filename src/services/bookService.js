@@ -220,6 +220,20 @@ export async function adjustAvailability(id, delta) {
   return updated
 }
 
+// Called by category management: renames a category on every book that uses it
+// (also used to move books out of a deleted category). Returns how many changed.
+export async function reassignCategory(from, to) {
+  const books = await getBooks()
+  let changed = 0
+  const updated = books.map((b) => {
+    if (b.category !== from) return b
+    changed += 1
+    return { ...b, category: to }
+  })
+  writeCache(updated)
+  return changed
+}
+
 // Throws away local changes and reloads the catalogue from Open Library.
 export async function resetBooks() {
   localStorage.removeItem(STORAGE_KEY)

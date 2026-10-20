@@ -6,6 +6,8 @@ import Pagination from '../../components/Pagination'
 import ConfirmDialog from '../../components/ConfirmDialog'
 import useToast from '../../context/useToast'
 import { deleteBook, getBooks, resetBooks } from '../../services/bookService'
+import { getCategories } from '../../services/categoryService'
+import { BOOK_SEARCH_FIELDS, matchBook } from '../../utils/search'
 
 const SORTS = {
   'title-asc': { label: 'Title (A–Z)', fn: (a, b) => a.title.localeCompare(b.title) },
@@ -14,7 +16,7 @@ const SORTS = {
   'year-asc': { label: 'Oldest first', fn: (a, b) => a.publishedYear - b.publishedYear },
 }
 const PAGE_SIZES = [8, 12, 24, 48]
-const DEFAULTS = { q: '', category: '', author: '', sort: 'title-asc', page: '1', size: '12' }
+const DEFAULTS = { q: '', by: 'all', category: '', author: '', sort: 'title-asc', page: '1', size: '12' }
 
 const uniqueSorted = (values) => [...new Set(values)].sort((a, b) => a.localeCompare(b))
 
@@ -98,24 +100,31 @@ export default function BookList() {
     if (await load(resetBooks)) toast.success('Books reloaded from Open Library.')
   }
 
-  const categories = useMemo(() => uniqueSorted(books.map((b) => b.category)), [books])
+  // Managed categories (so empty ones are listed too), with counts from the loaded books.
+  const [managedCategories, setManagedCategories] = useState([])
+  useEffect(() => {
+    if (status !== 'ready') return
+    getCategories()
+      .then((list) => setManagedCategories(list.map((c) => c.name)))
+      .catch(() => setManagedCategories([]))
+  }, [status])
+  const categories = useMemo(() => {
+    const counts = {}
+    books.forEach((b) => {
+      counts[b.category] = (counts[b.category] || 0) + 1
+    })
+    return uniqueSorted([...managedCategories, ...Object.keys(counts)]).map((name) => ({ name, count: counts[name] || 0 }))
+  }, [books, managedCategories])
   const authors = useMemo(() => uniqueSorted(books.map((b) => b.author)), [books])
 
   const filtered = useMemo(() => {
-    const q = params.q.trim().toLowerCase()
-    const qDigits = q.replace(/[-\s]/g, '')
+    const searchField = BOOK_SEARCH_FIELDS[params.by] ? params.by : 'all'
     return books
       .filter((b) => !params.category || b.category === params.category)
       .filter((b) => !params.author || b.author === params.author)
-      .filter(
-        (b) =>
-          !q ||
-          b.title.toLowerCase().includes(q) ||
-          b.author.toLowerCase().includes(q) ||
-          (qDigits && b.isbn.replace(/-/g, '').includes(qDigits)),
-      )
+      .filter((b) => !params.q.trim() || matchBook(b, params.q, searchField))
       .sort((SORTS[params.sort] ?? SORTS['title-asc']).fn)
-  }, [books, params.q, params.category, params.author, params.sort])
+  }, [books, params.q, params.by, params.category, params.author, params.sort])
 
   const pageSize = Number(params.size) || 12
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
@@ -164,16 +173,25 @@ export default function BookList() {
           </svg>
           <input
             type="search"
-            placeholder="Search by title, author or ISBN…"
+            placeholder={
+              BOOK_SEARCH_FIELDS[params.by] && params.by !== 'all'
+                ? `Search by ${BOOK_SEARCH_FIELDS[params.by].toLowerCase()}…`
+                : 'Search by title, author or ISBN…'
+            }
             value={params.q}
             onChange={(e) => updateParams({ q: e.target.value })}
             aria-label="Search books"
           />
         </div>
+        <select value={params.by} onChange={(e) => updateParams({ by: e.target.value })} aria-label="Search in">
+          {Object.entries(BOOK_SEARCH_FIELDS).map(([key, label]) => (
+            <option key={key} value={key}>{key === 'all' ? 'Search all fields' : `${label} only`}</option>
+          ))}
+        </select>
         <select value={params.category} onChange={(e) => updateParams({ category: e.target.value })} aria-label="Filter by category">
           <option value="">All categories</option>
           {categories.map((c) => (
-            <option key={c} value={c}>{c}</option>
+            <option key={c.name} value={c.name}>{c.name} ({c.count})</option>
           ))}
         </select>
         <select value={params.author} onChange={(e) => updateParams({ author: e.target.value })} aria-label="Filter by author">
