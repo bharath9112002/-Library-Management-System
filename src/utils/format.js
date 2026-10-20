@@ -37,3 +37,23 @@ export function durationSince(value, now = new Date()) {
   if (rest) parts.push(`${rest} month${rest > 1 ? 's' : ''}`)
   return parts.join(' ')
 }
+
+const DAY = 24 * 60 * 60 * 1000
+
+export function toISODate(date) {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
+
+export function addDays(value, days) {
+  const date = parseDate(value)
+  date.setDate(date.getDate() + days)
+  return toISODate(date)
+}
+
+// Whole days from `from` to `to` (both "YYYY-MM-DD"); negative if `to` is earlier.
+export function daysBetween(from, to) {
+  return Math.round((parseDate(to) - parseDate(from)) / DAY)
+}

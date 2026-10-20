@@ -24,7 +24,7 @@ const QUICK_ACTIONS = [
   { to: '/books', label: 'Add Book', desc: 'Add a new title to the catalogue', icon: 'plus', accent: 'indigo' },
   { to: '/members', label: 'Add Member', desc: 'Register a new library member', icon: 'userPlus', accent: 'sky' },
   { to: '/issues', label: 'Issue Book', desc: 'Lend a book to a member', icon: 'issue', accent: 'violet' },
-  { to: '/issues', label: 'Return Book', desc: 'Record a returned book', icon: 'return', accent: 'emerald' },
+  { to: '/issues?tab=return', label: 'Return Book', desc: 'Record a returned book', icon: 'return', accent: 'emerald' },
   { to: '/fines', label: 'Collect Fine', desc: 'Review overdue fines', icon: 'wallet', accent: 'rose' },
   { to: '/reports', label: 'View Reports', desc: 'Library insights & trends', icon: 'chart', accent: 'amber' },
 ]

@@ -16,6 +16,7 @@ import BookFormPage from './pages/books/BookForm'
 import MemberList from './pages/members/MemberList'
 import MemberProfile from './pages/members/MemberProfile'
 import MemberFormPage from './pages/members/MemberForm'
+import IssueReturn from './pages/issues/IssueReturn'
 
 export default function App() {
   return (
@@ -42,7 +43,7 @@ export default function App() {
                 <Route path="/members/new" element={<MemberFormPage />} />
                 <Route path="/members/:id" element={<MemberProfile />} />
                 <Route path="/members/:id/edit" element={<MemberFormPage />} />
-                <Route path="/issues" element={<ComingSoon title="Issue / Return Books" />} />
+                <Route path="/issues" element={<IssueReturn />} />
                 <Route path="/fines" element={<ComingSoon title="Fines" />} />
                 <Route path="/categories" element={<ComingSoon title="Categories" />} />
                 <Route path="/reports" element={<ComingSoon title="Reports" />} />

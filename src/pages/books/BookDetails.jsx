@@ -121,7 +121,10 @@ export default function BookDetails() {
           <p className="details-description">{book.description}</p>
 
           <div className="details-actions">
-            <Link to={`/books/${book.id}/edit`} className="btn btn-primary">✎ Edit Book</Link>
+            {book.availableCopies > 0 && (
+              <Link to={`/issues?book=${book.id}`} className="btn btn-primary">📖 Issue this book</Link>
+            )}
+            <Link to={`/books/${book.id}/edit`} className="btn btn-outline">✎ Edit Book</Link>
             <button type="button" className="btn btn-danger-outline" onClick={() => setConfirmOpen(true)}>
               🗑 Delete
             </button>

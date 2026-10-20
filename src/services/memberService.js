@@ -1,6 +1,8 @@
 // Member service backed by localStorage.
 // The first time it runs, the store is seeded with sample members.
 
+import { countActiveIssues } from './issueService'
+
 const STORAGE_KEY = 'lms_members'
 const SEQUENCE_KEY = 'lms_member_seq' // last membership number issued, so deleted IDs are never reused
 
@@ -139,5 +141,7 @@ export async function updateMember(id, data) {
 export async function deleteMember(id) {
   const members = readMembers()
   if (!members.some((m) => m.id === Number(id))) throw new Error('Member not found.')
+  const active = countActiveIssues({ memberId: id })
+  if (active) throw new Error(`This member still has ${active} book${active > 1 ? 's' : ''} issued. Return ${active > 1 ? 'them' : 'it'} before deleting.`)
   writeMembers(members.filter((m) => m.id !== Number(id)))
 }

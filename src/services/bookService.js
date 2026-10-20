@@ -9,6 +9,8 @@
 //
 // Open Library is read-only, so add/edit/delete are saved to localStorage.
 
+import { countActiveIssues } from './issueService'
+
 const API_URL = 'https://openlibrary.org'
 const COVERS_URL = 'https://covers.openlibrary.org/b/id'
 const STORAGE_KEY = 'lms_books_v2'
@@ -201,7 +203,21 @@ export async function updateBook(id, data) {
 export async function deleteBook(id) {
   const books = await getBooks()
   if (!books.some((b) => b.id === Number(id))) throw new Error('Book not found.')
+  const active = countActiveIssues({ bookId: id })
+  if (active) throw new Error(`${active} cop${active > 1 ? 'ies are' : 'y is'} still issued. Return ${active > 1 ? 'them' : 'it'} before deleting.`)
   writeCache(books.filter((b) => b.id !== Number(id)))
+}
+
+// Called by the issue/return module: -1 when issued, +1 when returned.
+export async function adjustAvailability(id, delta) {
+  const books = await getBooks()
+  const book = books.find((b) => b.id === Number(id))
+  if (!book) throw new Error('Book not found.')
+  const availableCopies = Math.min(book.totalCopies, Math.max(0, book.availableCopies + delta))
+  if (delta < 0 && book.availableCopies < 1) throw new Error('No copies of this book are available.')
+  const updated = { ...book, availableCopies }
+  writeCache(books.map((b) => (b.id === book.id ? updated : b)))
+  return updated
 }
 
 // Throws away local changes and reloads the catalogue from Open Library.

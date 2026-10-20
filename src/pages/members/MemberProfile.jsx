@@ -1,17 +1,22 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import Avatar from '../../components/Avatar'
+import BookCover from '../../components/BookCover'
+import IssueStatus from '../../components/IssueStatus'
 import ConfirmDialog from '../../components/ConfirmDialog'
 import useToast from '../../context/useToast'
 import { deleteMember, getMemberById } from '../../services/memberService'
-import { durationSince, formatDate, formatMobile } from '../../utils/format'
+import { MAX_ACTIVE_PER_MEMBER, getIssues } from '../../services/issueService'
+import { durationSince, formatDate, formatMobile, todayISO } from '../../utils/format'
 
 export default function MemberProfile() {
   const { id } = useParams()
   const navigate = useNavigate()
   const toast = useToast()
   const [member, setMember] = useState(null)
+  const [issues, setIssues] = useState(null)
   const [error, setError] = useState('')
+  const [today] = useState(todayISO)
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [deleting, setDeleting] = useState(false)
 
@@ -20,6 +25,10 @@ export default function MemberProfile() {
     getMemberById(id)
       .then((data) => !cancelled && setMember(data))
       .catch((err) => !cancelled && setError(err.message))
+    // Borrowing history is optional: if it fails (e.g. offline), the profile still shows.
+    getIssues()
+      .then((all) => !cancelled && setIssues(all.filter((i) => i.memberId === Number(id))))
+      .catch(() => !cancelled && setIssues([]))
     return () => {
       cancelled = true
     }
@@ -79,6 +88,7 @@ export default function MemberProfile() {
           </p>
         </div>
         <div className="profile-hero-actions">
+          <Link to={`/issues?member=${member.id}`} className="btn btn-light">📖 Issue a book</Link>
           <Link to={`/members/${member.id}/edit`} className="btn btn-light">✎ Edit</Link>
           <button type="button" className="btn btn-ghost-light" onClick={() => setConfirmOpen(true)}>
             🗑 Delete
@@ -101,6 +111,8 @@ export default function MemberProfile() {
         </dl>
       </section>
 
+      <BorrowingHistory issues={issues} today={today} />
+
       <ConfirmDialog
         open={confirmOpen}
         title="Delete this member?"
@@ -110,5 +122,63 @@ export default function MemberProfile() {
         onCancel={() => setConfirmOpen(false)}
       />
     </div>
+  )
+}
+
+function BorrowingHistory({ issues, today }) {
+  if (!issues) {
+    return (
+      <section className="card borrowing">
+        <h2 className="form-section-title">Borrowing history</h2>
+        <div className="spinner" />
+      </section>
+    )
+  }
+
+  const sorted = [...issues].sort((a, b) => b.issueDate.localeCompare(a.issueDate))
+  const active = sorted.filter((i) => !i.returnDate)
+  const returned = sorted.filter((i) => i.returnDate)
+
+  const renderRow = (i) => (
+    <li key={i.id} className="borrow-row">
+      <BookCover src={i.bookCover} title={i.bookTitle} className="table-cover" />
+      <div className="borrow-text">
+        <Link to={`/books/${i.bookId}`} className="member-name">{i.bookTitle}</Link>
+        <span className="muted">
+          Issued {formatDate(i.issueDate)} · Due {formatDate(i.dueDate)}
+          {i.returnDate && ` · Returned ${formatDate(i.returnDate)}`}
+        </span>
+      </div>
+      <IssueStatus issue={i} today={today} />
+    </li>
+  )
+
+  return (
+    <section className="card borrowing">
+      <div className="panel-header">
+        <h2 className="form-section-title">Borrowing history</h2>
+        <span className="muted">
+          {active.length}/{MAX_ACTIVE_PER_MEMBER} currently issued · {issues.length} total
+        </span>
+      </div>
+      {issues.length === 0 ? (
+        <p className="muted">This member hasn&apos;t borrowed any books yet.</p>
+      ) : (
+        <>
+          {active.length > 0 && (
+            <>
+              <h3 className="borrow-heading">Currently issued</h3>
+              <ul className="borrow-list">{active.map(renderRow)}</ul>
+            </>
+          )}
+          {returned.length > 0 && (
+            <>
+              <h3 className="borrow-heading">Returned</h3>
+              <ul className="borrow-list">{returned.map(renderRow)}</ul>
+            </>
+          )}
+        </>
+      )}
+    </section>
   )
 }
